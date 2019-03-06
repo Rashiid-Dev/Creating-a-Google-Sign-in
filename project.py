@@ -13,6 +13,28 @@ Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
+#Sign in imports
+from flask import session as login_session
+import random, string
+
+#oauth imports
+from oath2client.client import flow_from_clientsecrets
+from oauthclient.client import FlowExchangeError
+import httplib2
+import json
+from flask import make_response
+import requests
+
+
+
+# Creatong anti-forgery state token
+@app.route('/login')
+def showLogin():
+  state = ''.join(random.choice(string.ascii_uppercase + string.digits)
+    for x in xrange(32))
+  login_session['state'] = state
+  return render_template('login.html', STATE=state)
+  #return " The current session state is %s" %login_session['state']
 
 #JSON APIs to view Restaurant Information
 @app.route('/restaurant/<int:restaurant_id>/menu/JSON')
